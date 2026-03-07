@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Name | Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #111;
+    --white: #fafafa;
+    --gray: #888;
+    --light: #e6e4e0;
+    --transition: 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    min-height: 100vh;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 26px 40px;
+    background: rgba(250,250,250,0.93);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  nav.scrolled { border-bottom-color: #ddd; }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a, .nav-links span {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--black);
+    position: relative;
+  }
+  .nav-links a::after, .nav-links span::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0;
+    width: 0; height: 1px;
+    background: var(--black);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover::after, .nav-links span:hover::after { width: 100%; }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── INDEX ── */
+  #page-index { padding-top: 80px; }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+  .work-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 3/4;
+    background: var(--light);
+    animation: fadeUp 0.65s ease both;
+  }
+  .work-item:nth-child(1){animation-delay:0.04s}
+  .work-item:nth-child(2){animation-delay:0.09s}
+  .work-item:nth-child(3){animation-delay:0.14s}
+  .work-item:nth-child(4){animation-delay:0.19s}
+  .work-item:nth-child(5){animation-delay:0.24s}
+  .work-item:nth-child(6){animation-delay:0.29s}
+
+  .work-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px;
+    color: rgba(0,0,0,0.07);
+    transition: transform var(--transition), filter var(--transition);
+  }
+  .work-item:hover .work-placeholder {
+    transform: scale(1.04);
+    filter: brightness(0.82);
+  }
+  .work-item img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform var(--transition), filter var(--transition);
+  }
+  .work-item:hover img {
+    transform: scale(1.04);
+    filter: brightness(0.7);
+  }
+  .work-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 30px 26px;
+    background: linear-gradient(to top, rgba(0,0,0,0.42) 0%, transparent 52%);
+    opacity: 0;
+    transition: opacity var(--transition);
+  }
+  .work-item:hover .work-overlay { opacity: 1; }
+  .work-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: 0.08em;
+    line-height: 1.25;
+  }
+  .work-tag {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    margin-top: 5px;
+  }
+
+  /* ── DETAIL ── */
+  #page-detail { padding-top: 80px; }
+  .detail-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 40px 100px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    cursor: pointer;
+    margin-bottom: 48px;
+    transition: color 0.2s;
+  }
+  .detail-back:hover { color: var(--black); }
+  .detail-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(30px, 5vw, 50px);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    margin-bottom: 52px;
+    line-height: 1.1;
+  }
+
+  /* Photos — stacked full width */
+  .detail-photos {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 60px;
+  }
+  .detail-photo {
+    width: 100%;
+    background: var(--light);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 90px;
+    color: rgba(0,0,0,0.05);
+  }
+  .detail-photo:nth-child(odd)  { aspect-ratio: 3/4; }
+  .detail-photo:nth-child(even) { aspect-ratio: 4/3; }
+  .detail-photo img { width:100%; height:100%; object-fit:cover; }
+
+  /* Meta */
+  .detail-meta {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 32px;
+    margin-bottom: 52px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+    font-size: 12px;
+    line-height: 1.9;
+  }
+  .detail-meta-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* Back story */
+  .backstory-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .backstory p {
+    font-size: 13.5px;
+    line-height: 2.1;
+    letter-spacing: 0.04em;
+    color: #333;
+    margin-bottom: 24px;
+  }
+
+  /* Related */
+  .related-section {
+    margin-top: 80px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 48px;
+  }
+  .related-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 28px;
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px;
+  }
+  .related-item {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    background: var(--light);
+  }
+  .related-placeholder {
+    width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cormorant Garamond',serif;
+    font-size:40px;
+    color:rgba(0,0,0,0.07);
+    transition: transform var(--transition), filter var(--transition);
+  }
+  .related-item:hover .related-placeholder {
+    transform:scale(1.05);
+    filter:brightness(0.8);
+  }
+  .related-name {
+    position:absolute;
+    bottom:0; left:0; right:0;
+    padding:10px 12px;
+    font-size:11px;
+    letter-spacing:0.06em;
+    background:linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+    color:#fff;
+    opacity:0;
+    transition:opacity var(--transition);
+  }
+  .related-item:hover .related-name { opacity:1; }
+
+  /* Footer */
+  .back-top {
+    text-align:center;
+    padding: 60px 40px 30px;
+  }
+  .back-top span {
+    font-size:10px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gray);
+    cursor:pointer;
+    transition:color 0.2s;
+  }
+  .back-top span:hover { color:var(--black); }
+  footer {
+    text-align:center;
+    padding:16px 40px 40px;
+    font-size:10px;
+    letter-spacing:0.12em;
+    color:var(--gray);
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  @media (max-width:640px) {
+    nav { padding:18px 20px; }
+    .grid { grid-template-columns:1fr; }
+    .detail-inner { padding:40px 20px 80px; }
+    .detail-meta { grid-template-columns:1fr; }
+    .related-grid { grid-template-columns:repeat(2,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<nav id="main-nav">
+  <div class="nav-logo" onclick="showIndex()">Your Name</div>
+  <ul class="nav-links">
+    <li><span onclick="showIndex()">Work</span></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- INDEX -->
+<div id="page-index" class="page active">
+  <div class="grid" id="work-grid"></div>
+  <div class="back-top">
+    <span onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to Top</span>
+  </div>
+  <footer>© 2025 Your Name</footer>
+</div>
+
+<!-- DETAIL -->
+<div id="page-detail" class="page">
+  <div class="detail-inner">
+    <div class="detail-back" onclick="showIndex()">← Work</div>
+    <h1 class="detail-title" id="detail-title"></h1>
+    <div class="detail-photos" id="detail-photos"></div>
+    <div class="detail-meta" id="detail-meta"></div>
+    <div id="detail-backstory-wrap"></div>
+    <div class="related-section">
+      <div class="related-label">You may also like</div>
+      <div class="related-grid" id="related-grid"></div>
+    </div>
+  </div>
+  <footer>© 2025 Your Name</footer>
+</div>
+
+<script>
+const works = [
+  {
+    key: 'ham',
+    title: 'HAM YOKOYAMA',
+    tag: 'Branding · 2025',
+    num: '01',
+    client: 'HAM YOKOYAMA（ハム横山）/ ともに食卓舎',
+    year: '2025',
+    location: '大阪・豊中',
+    type: 'ブランディング　ネーミング　ロゴデザイン　パッケージデザイン',
+    role: 'アートディレクション　デザイン',
+    photos: 5,
+    backstory: `
+      <p>最初に横山さんに会ったとき「ブランド名は、ハム工房 はちどりで考えているんですよ。はちどりは世界で一番小さい鳥で、自分もこれからハム工房を立ち上げる存在として、小さくても一生懸命羽ばたくあの姿に勇気をもらうんですよね」と教えてくれました。</p>
+      <p>小さい存在だからこそ責任を持って挑み続ける。その気持ちはすごく真っ直ぐで、横山さんらしいなと。ただ「ハム」と「はちどり」がどうしても頭の中でつながらない。しかも既に、このロゴのラフまで用意されていて「このロゴをもとにパッケージを展開したいんですが、どうですかね？」と。</p>
+      <p>正直、心の中では「これはロゴ以前に、コンセプトを含めたブランドのネーミングから見直した方が良いのでは」と感じていました。幸い、横山さんとは初対面ではなかったので、やり取りはしやすかったんですが、それでもやんわりと別の方向を探れるように話を進めたのを覚えています。</p>
+    `
+  },
+  {
+    key: 'tea',
+    title: 'TEA HOLIC',
+    tag: 'Art Direction · 2024',
+    num: '02',
+    client: 'TEA HOLIC',
+    year: '2024',
+    location: '大阪',
+    type: 'アートディレクション　パッケージデザイン',
+    role: 'アートディレクション　デザイン',
+    photos: 4,
+    backstory: null
+  },
+  {
+    key: 'hidarikiki',
+    title: '左利きの女',
+    tag: 'Editorial · 2024',
+    num: '03',
+    client: '左利きの女',
+    year: '2024',
+    location: '東京',
+    type: 'エディトリアルデザイン',
+    role: 'アートディレクション',
+    photos: 4,
+    backstory: null
+  },
+  {
+    key: 'udondo',
+    title: '惑星のウドンド',
+    tag: 'Photography · 2024',
+    num: '04',
+    client: '惑星のウドンド',
+    year: '2024',
+    location: '大阪・北摂',
+    type: 'ブランディング　メニューデザイン',
+    role: 'アートディレクション　フォトグラフィー',
+    photos: 6,
+    backstory: null
+  },
+  {
+    key: 'smoke',
+    title: 'Smoke & Sumibi 102',
+    tag: 'Branding · 2023',
+    num: '05',
+    client: 'Smoke & Sumibi 102',
+    year: '2023',
+    location: '大阪',
+    type: 'ブランディング　ロゴデザイン',
+    role: 'アートディレクション　デザイン',
+    photos: 4,
+    backstory: null
+  },
+  {
+    key: 'dojyo',
+    title: 'どじょう',
+    tag: 'Design · 2023',
+    num: '06',
+    client: 'どじょう',
+    year: '2023',
+    location: '大阪',
+    type: 'ロゴデザイン　パッケージデザイン',
+    role: 'デザイン',
+    photos: 3,
+    backstory: null
+  }
+];
+
+// Build index grid
+const grid = document.getElementById('work-grid');
+works.forEach(w => {
+  const item = document.createElement('div');
+  item.className = 'work-item';
+  item.onclick = () => showDetail(w.key);
+  item.innerHTML = `
+    <div class="work-placeholder">${w.num}</div>
+    <div class="work-overlay">
+      <div class="work-title">${w.title}</div>
+      <div class="work-tag">${w.tag}</div>
+    </div>
+  `;
+  grid.appendChild(item);
+});
+
+function showIndex() {
+  document.getElementById('page-index').classList.add('active');
+  document.getElementById('page-detail').classList.remove('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.title = 'Your Name | Portfolio';
+}
+
+function showDetail(key) {
+  const w = works.find(x => x.key === key);
+  if (!w) return;
+
+  document.getElementById('detail-title').textContent = w.title;
+
+  // Photos
+  const photosEl = document.getElementById('detail-photos');
+  photosEl.innerHTML = '';
+  for (let i = 1; i <= w.photos; i++) {
+    const div = document.createElement('div');
+    div.className = 'detail-photo';
+    div.textContent = String(i).padStart(2, '0');
+    photosEl.appendChild(div);
+  }
+
+  // Meta
+  const metaEl = document.getElementById('detail-meta');
+  const metaFields = [
+    ['Client', w.client],
+    ['Year', w.year],
+    ['Location', w.location],
+    ['Project Type', w.type],
+    ['Role', w.role],
+    ['By', 'Your Name'],
+  ];
+  metaEl.innerHTML = metaFields.map(([label, val]) => `
+    <div>
+      <span class="detail-meta-label">${label}</span>
+      <span>${val}</span>
+    </div>
+  `).join('');
+
+  // Backstory
+  const bsWrap = document.getElementById('detail-backstory-wrap');
+  bsWrap.innerHTML = w.backstory
+    ? `<div class="backstory-heading">BACK STORY</div><div class="backstory">${w.backstory}</div>`
+    : '';
+
+  // Related
+  const relatedEl = document.getElementById('related-grid');
+  relatedEl.innerHTML = '';
+  works.filter(x => x.key !== key).slice(0, 4).forEach(rw => {
+    const item = document.createElement('div');
+    item.className = 'related-item';
+    item.onclick = () => showDetail(rw.key);
+    item.innerHTML = `
+      <div class="related-placeholder">${rw.num}</div>
+      <div class="related-name">${rw.title}</div>
+    `;
+    relatedEl.appendChild(item);
+  });
+
+  document.getElementById('page-index').classList.remove('active');
+  document.getElementById('page-detail').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  document.title = `${w.title} | Your Name`;
+}
+
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 10);
+});
+</script>
+</body>
+</html>
