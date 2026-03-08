@@ -357,107 +357,40 @@
 </div>
 
 <script>
-const works = [
-  {
-    key: 'ham',
-    title: 'HAM YOKOYAMA',
-    tag: 'Branding · 2025',
-    num: '01',
-    client: 'HAM YOKOYAMA（ハム横山）/ ともに食卓舎',
-    year: '2025',
-    location: '大阪・豊中',
-    type: 'ブランディング　ネーミング　ロゴデザイン　パッケージデザイン',
-    role: 'アートディレクション　デザイン',
-    photos: 5,
-    backstory: `
-      <p>最初に横山さんに会ったとき「ブランド名は、ハム工房 はちどりで考えているんですよ。はちどりは世界で一番小さい鳥で、自分もこれからハム工房を立ち上げる存在として、小さくても一生懸命羽ばたくあの姿に勇気をもらうんですよね」と教えてくれました。</p>
-      <p>小さい存在だからこそ責任を持って挑み続ける。その気持ちはすごく真っ直ぐで、横山さんらしいなと。ただ「ハム」と「はちどり」がどうしても頭の中でつながらない。しかも既に、このロゴのラフまで用意されていて「このロゴをもとにパッケージを展開したいんですが、どうですかね？」と。</p>
-      <p>正直、心の中では「これはロゴ以前に、コンセプトを含めたブランドのネーミングから見直した方が良いのでは」と感じていました。幸い、横山さんとは初対面ではなかったので、やり取りはしやすかったんですが、それでもやんわりと別の方向を探れるように話を進めたのを覚えています。</p>
-    `
-  },
-  {
-    key: 'tea',
-    title: 'TEA HOLIC',
-    tag: 'Art Direction · 2024',
-    num: '02',
-    client: 'TEA HOLIC',
-    year: '2024',
-    location: '大阪',
-    type: 'アートディレクション　パッケージデザイン',
-    role: 'アートディレクション　デザイン',
-    photos: 4,
-    backstory: null
-  },
-  {
-    key: 'hidarikiki',
-    title: '左利きの女',
-    tag: 'Editorial · 2024',
-    num: '03',
-    client: '左利きの女',
-    year: '2024',
-    location: '東京',
-    type: 'エディトリアルデザイン',
-    role: 'アートディレクション',
-    photos: 4,
-    backstory: null
-  },
-  {
-    key: 'udondo',
-    title: '惑星のウドンド',
-    tag: 'Photography · 2024',
-    num: '04',
-    client: '惑星のウドンド',
-    year: '2024',
-    location: '大阪・北摂',
-    type: 'ブランディング　メニューデザイン',
-    role: 'アートディレクション　フォトグラフィー',
-    photos: 6,
-    backstory: null
-  },
-  {
-    key: 'smoke',
-    title: 'Smoke & Sumibi 102',
-    tag: 'Branding · 2023',
-    num: '05',
-    client: 'Smoke & Sumibi 102',
-    year: '2023',
-    location: '大阪',
-    type: 'ブランディング　ロゴデザイン',
-    role: 'アートディレクション　デザイン',
-    photos: 4,
-    backstory: null
-  },
-  {
-    key: 'dojyo',
-    title: 'どじょう',
-    tag: 'Design · 2023',
-    num: '06',
-    client: 'どじょう',
-    year: '2023',
-    location: '大阪',
-    type: 'ロゴデザイン　パッケージデザイン',
-    role: 'デザイン',
-    photos: 3,
-    backstory: null
-  }
-];
+let works = [];
 
-// Build index grid
-const grid = document.getElementById('work-grid');
-works.forEach(w => {
-  const item = document.createElement('div');
-  item.className = 'work-item';
-  item.onclick = () => showDetail(w.key);
-  item.innerHTML = `
-    <div class="work-placeholder">${w.num}</div>
-    <div class="work-overlay">
-      <div class="work-title">${w.title}</div>
-      <div class="work-tag">${w.tag}</div>
-    </div>
-  `;
-  grid.appendChild(item);
-});
+   async function loadPortfolio() {
+        try {
+               const res = await fetch('/api/portfolio');
+               if (!res.ok) throw new Error('API error ' + res.status);
+               works = await res.json();
+        } catch (e) {
+               console.error('Portfolio load failed:', e);
+        }
+        renderGrid();
+   }
 
+   function renderGrid() {
+        const grid = document.getElementById('work-grid');
+        grid.innerHTML = '';
+        works.forEach(w => {
+               const item = document.createElement('div');
+               item.className = 'work-item';
+               item.onclick = () => showDetail(w.key);
+               const imgStyle = w.imageUrl
+                 ? 'background-image:url(\'' + w.imageUrl + '\');background-size:cover;background-position:center;'
+                        : '';
+               item.innerHTML =
+                        '<div class="work-placeholder" style="' + imgStyle + '">' + (w.imageUrl ? '' : w.num) + '</div>' +
+                        '<div class="work-overlay">' +
+                        '<div class="work-title">' + w.title + '</div>' +
+                        '<div class="work-tag">' + w.tag + '</div>' +
+                        '</div>';
+               grid.appendChild(item);
+        });
+   }
+
+   loadPortfolio();
 function showIndex() {
   document.getElementById('page-index').classList.add('active');
   document.getElementById('page-detail').classList.remove('active');
