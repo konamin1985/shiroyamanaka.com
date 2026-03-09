@@ -24,7 +24,7 @@ export default async function handler(req, res) {
                 ? '<p>' + backstoryRaw.split('\n').filter(s => s.trim()).join('</p><p>') + '</p>'
                 : null;
             const photosRaw = p['写真URLs']?.rich_text?.map(t => t.plain_text).join('') ?? '';
-            const photos = photosRaw ? photosRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+            const photos = photosRaw ? photosRaw.split('\n').map(s => s.trim().replace(/^[\[(<]|[\])>]$/g, '')).filter(s => s.startsWith('http')) : [];
             const key = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '') || `work-${index + 1}`;
             return { key, title, tag: [category, year].filter(Boolean).join(' · '), num: String(index + 1).padStart(2, '0'), imageUrl, year, type: description, client: '', location: '', role: '', backstory, photos };
         });
