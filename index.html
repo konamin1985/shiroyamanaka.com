@@ -260,6 +260,9 @@
     position: relative;
     animation: fadeUp 0.35s ease both;
   }
+  @media (max-width: 640px) {
+    .bs-modal { padding-left: 2rem; padding-right: 2rem; }
+  }
   .bs-modal-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: 13px;
@@ -277,9 +280,9 @@
     margin-bottom: 24px;
   }
   .bs-close {
-    position: absolute;
-    top: 20px;
-    right: 24px;
+    display: block;
+    text-align: right;
+    margin-top: 2rem;
     font-size: 10px;
     letter-spacing: 0.18em;
     cursor: pointer;
@@ -540,9 +543,9 @@ window.addEventListener('scroll', () => {
   <!-- Back story Modal -->
   <div class="bs-overlay" id="bs-overlay" onclick="if(event.target===this)closeBsModal()">
     <div class="bs-modal" id="bs-modal">
-      <div class="bs-close" onclick="closeBsModal()">Close</div>
       <div class="bs-modal-title">Back Story</div>
       <div id="bs-modal-content"></div>
+      <div class="bs-close" onclick="closeBsModal()">Close</div>
     </div>
   </div>
 </body>
