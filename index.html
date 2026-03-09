@@ -74,7 +74,7 @@
   .page { display: none; }
   .page.active { display: block; }
 
-  /* ââ INDEX ââ */
+  /* Ã¢ÂÂÃ¢ÂÂ INDEX Ã¢ÂÂÃ¢ÂÂ */
   #page-index { padding-top: 80px; }
   .grid {
     display: grid;
@@ -145,7 +145,7 @@
     margin-top: 5px;
   }
 
-  /* ââ DETAIL ââ */
+  /* Ã¢ÂÂÃ¢ÂÂ DETAIL Ã¢ÂÂÃ¢ÂÂ */
   #page-detail { padding-top: 80px; }
   .detail-inner {
     max-width: 860px;
@@ -175,7 +175,7 @@
     line-height: 1.1;
   }
 
-  /* Photos â stacked full width */
+  /* Photos Ã¢ÂÂ stacked full width */
   .detail-photos {
     display: flex;
     flex-direction: column;
@@ -194,6 +194,8 @@
     color: rgba(0,0,0,0.05);
   }
   .detail-photo:nth-child(odd)  { aspect-ratio: 3/4; }
+  .detail-photos.has-photos { display: flex; }
+  .detail-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .detail-photo:nth-child(even) { aspect-ratio: 4/3; }
   .detail-photo img { width:100%; height:100%; object-fit:cover; }
 
@@ -387,15 +389,15 @@
 <div id="page-index" class="page active">
   <div class="grid" id="work-grid"></div>
   <div class="back-top">
-    <span onclick="window.scrollTo({top:0,behavior:'smooth'})">â Back to Top</span>
+    <span onclick="window.scrollTo({top:0,behavior:'smooth'})">Ã¢ÂÂ Back to Top</span>
   </div>
-  <footer>Â© 2025 Your Name</footer>
+  <footer>ÃÂ© 2025 Your Name</footer>
 </div>
 
 <!-- DETAIL -->
 <div id="page-detail" class="page">
   <div class="detail-inner">
-    <div class="detail-back" onclick="showIndex()">â Work</div>
+    <div class="detail-back" onclick="showIndex()">Ã¢ÂÂ Work</div>
     <h1 class="detail-title" id="detail-title"></h1>
     <div class="detail-photos" id="detail-photos"></div>
     <div class="detail-meta" id="detail-meta"></div>
@@ -404,7 +406,7 @@
       <div class="related-grid" id="related-grid"></div>
     </div>
   </div>
-  <footer>Â© 2025 Your Name</footer>
+  <footer>ÃÂ© 2025 Your Name</footer>
 </div>
 
 <script>
@@ -457,13 +459,13 @@ function showDetail(key) {
 
   // Photos
   const photosEl = document.getElementById('detail-photos');
-  photosEl.innerHTML = '';
-  for (let i = 1; i <= w.photos; i++) {
-    const div = document.createElement('div');
-    div.className = 'detail-photo';
-    div.textContent = String(i).padStart(2, '0');
-    photosEl.appendChild(div);
-  }
+    photosEl.innerHTML = '';
+    if (Array.isArray(w.photos) && w.photos.length > 0) {
+      photosEl.innerHTML = w.photos.map(url => '<div class="detail-photo"><img src="' + url + '" alt="" loading="lazy"></div>').join('');
+      photosEl.classList.add('has-photos');
+    } else {
+      photosEl.classList.remove('has-photos');
+    }
 
   // Meta
   const metaEl = document.getElementById('detail-meta');
