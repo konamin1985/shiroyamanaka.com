@@ -17,7 +17,7 @@ export default async function handler(req, res) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    sorts: [{ property: '年', direction: 'descending' }],
+                    sorts: [{ property: 'å¹´', direction: 'descending' }],
                 }),
             }
         );
@@ -31,16 +31,18 @@ export default async function handler(req, res) {
 
         const works = data.results.map((page, index) => {
             const p = page.properties;
-            const title = p['名前']?.title?.[0]?.plain_text ?? '';
-            const imageUrl = p['画像URL']?.rich_text?.[0]?.plain_text ?? '';
-            const category = p['カテゴリー']?.rich_text?.[0]?.plain_text ?? '';
-            const year = p['年']?.rich_text?.[0]?.plain_text ?? '';
-            const description = p['説明']?.rich_text?.[0]?.plain_text ?? '';
-            const backstoryRaw = p['バックストーリー']?.rich_text?.map(t => t.plain_text).join('') ?? '';
+            const title = p['åå']?.title?.[0]?.plain_text ?? '';
+            const imageUrl = p['ç»åURL']?.rich_text?.[0]?.plain_text ?? '';
+            const category = p['ã«ãã´ãªã¼']?.rich_text?.[0]?.plain_text ?? '';
+            const year = p['å¹´']?.rich_text?.[0]?.plain_text ?? '';
+            const description = p['èª¬æ']?.rich_text?.[0]?.plain_text ?? '';
+            const backstoryRaw = p['ããã¯ã¹ãã¼ãªã¼']?.rich_text?.map(t => t.plain_text).join('') ?? '';
             const backstory = backstoryRaw
                 ? '<p>' + backstoryRaw.split('\n').filter(s => s.trim()).join('</p><p>') + '</p>'
                 : null;
 
+            const photosRaw = p['写真URLs']?.rich_text?.map(t => t.plain_text).join('') ?? '';
+            const photos = photosRaw ? photosRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
             const key = title
                 .toLowerCase()
                 .replace(/\s+/g, '-')
@@ -49,7 +51,7 @@ export default async function handler(req, res) {
             return {
                 key,
                 title,
-                tag: [category, year].filter(Boolean).join(' · '),
+                tag: [category, year].filter(Boolean).join(' Â· '),
                 num: String(index + 1).padStart(2, '0'),
                 imageUrl,
                 year,
@@ -58,7 +60,7 @@ export default async function handler(req, res) {
                 location: '',
                 role: '',
                 backstory,
-                photos: 0,
+                photos,
             };
         });
 
