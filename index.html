@@ -530,15 +530,13 @@ window.addEventListener('scroll', () => {
       document.getElementById('bs-overlay').classList.remove('open');
       document.body.style.overflow = '';
     }
-    document.getElementById('bs-overlay').addEventListener('click', function(e) {
-      if (e.target === this) closeBsModal();
-    });
+
     </script>
 
   <!-- Back story FAB -->
   <div class="bs-fab" id="bs-fab" onclick="openBsModal()">Back Story</div>
   <!-- Back story Modal -->
-  <div class="bs-overlay" id="bs-overlay">
+  <div class="bs-overlay" id="bs-overlay" onclick="if(event.target===this)closeBsModal()">
     <div class="bs-modal" id="bs-modal">
       <div class="bs-close" onclick="closeBsModal()">Close</div>
       <div class="bs-modal-title">Back Story</div>
